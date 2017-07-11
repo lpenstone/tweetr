@@ -1,0 +1,49 @@
+article {
+  border-radius: 7px;
+  background-color: white;
+  border: 1px solid #e6e6e6;
+  position: relative;
+  top: 140px;
+  margin: 0 0 20px 0;
+}
+article:hover {
+  border: 1px solid #5e5e5e
+}
+article header{
+  background: #eeeeee;
+  padding: 10px;
+
+}
+article header h2 {
+  font-size: 2em;
+  color: #667e84;
+  margin-top: 0;
+}
+article:hover header h2 {
+  color: #000000;
+}
+article header span.user {
+  font-size: 0.9em;
+  padding-top: 10px;
+  float: right;
+}
+article header img {
+  border-radius: 7px;
+  width: 60px;
+  height: 60px;
+  margin-right: 10px;
+  float: left;
+  opacity: 0.7;
+}
+article:hover header img {
+ opacity: 1.0;
+}
+article p {
+  padding: 25px 10px;
+  font-size: 1.2em;
+}
+article footer {
+  font-size: 0.8em;
+  padding: 10px;
+  border-top: 1px solid #e6e6e6;
+}

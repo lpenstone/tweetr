@@ -5,9 +5,10 @@
   position: relative;
   top: 140px;
   padding: 10px;
+  margin: 0 0 20px 0;
 }
 
-h2 {
+.new-tweet h2 {
   font-size: 2em;
   border-bottom: 1px solid black;
   margin-top: 0;
