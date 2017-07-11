@@ -1,7 +1,7 @@
 article {
   border-radius: 7px;
   background-color: white;
-  border: 1px solid #e6e6e6;
+  border: 1px solid #d4d4d4;
   position: relative;
   top: 140px;
   margin: 0 0 20px 0;
@@ -10,6 +10,8 @@ article:hover {
   border: 1px solid #5e5e5e
 }
 article header{
+  border-top-right-radius: 7px;
+  border-top-left-radius: 7px;
   background: #eeeeee;
   padding: 10px;
 
@@ -20,7 +22,7 @@ article header h2 {
   margin-top: 0;
 }
 article:hover header h2 {
-  color: #000000;
+  color: #244751;
 }
 article header span.user {
   font-size: 0.9em;
@@ -46,4 +48,12 @@ article footer {
   font-size: 0.8em;
   padding: 10px;
   border-top: 1px solid #e6e6e6;
+}
+article footer span.link{
+  opacity: 0.0;
+  color: #66c5b7;
+  float: right;
+}
+article:hover footer span.link{
+  opacity: 1.0;
 }
