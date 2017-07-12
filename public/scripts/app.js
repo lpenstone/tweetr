@@ -81,6 +81,7 @@ $( document ).ready(function() {
       }).done(function () {
         loadTweets();
     });
+  $('#addTweet').trigger("reset");
   }
 });
 
