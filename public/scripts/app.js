@@ -41,10 +41,49 @@ function loadTweets() {
   });
 }
 
+
+
+
 //When the page has loaded
 $( document ).ready(function() {
-  //Display the tweets
+
+  //Display the tweets initially
   loadTweets();
+
+  //Compose button events and handlers
+  $('nav').on('click', '.button', function(){
+    $(this).parent().parent().find('.new-tweet').slideToggle();
+    $(this).parent().parent().find('#tweetText').focus();
+    $(this).addClass('on');
+  });
+  $('nav').on('mouseleave', '.button', function(){
+    $(this).removeClass('on');
+  });
+
+  //ADD TWEETS
+  $('#addTweet').on('submit', function (event) {
+  event.preventDefault();
+  var message = '';
+  var data = $('#tweetText').val();
+  if ( data === "" || data === null){
+    message = '<span class="warning">Need to enter a tweet</span>';
+    $("form .warning").replaceWith(message);
+  } else if ( data.length > 140){
+    message = '<span class="warning">Too many characters</span>';
+    $("form .warning").replaceWith(message);
+  } else {
+    message = "<span class='warning'></span>";
+    $("form .warning").replaceWith(message);
+    $.ajax({
+        method: 'POST',
+        url: '/tweets',
+        data: $(this).serialize()
+      }).done(function () {
+        loadTweets();
+    });
+  }
+});
+
 });
 
 
