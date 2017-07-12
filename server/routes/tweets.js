@@ -44,3 +44,9 @@ module.exports = function(DataHelpers) {
   return tweetsRoutes;
 
 }
+
+function addTweet(data) {
+  $.get('/tweets').then(function () {
+    DataHelpers(data);
+  });
+};
