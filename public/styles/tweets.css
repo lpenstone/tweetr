@@ -5,6 +5,7 @@ article {
   position: relative;
   top: 140px;
   margin: 0 0 20px 0;
+  word-wrap: break-word;
 }
 article:hover {
   border: 1px solid #5e5e5e

@@ -27,6 +27,7 @@ main {
   margin: auto;
   padding: 2em;
   background: white;
+  padding-bottom: 40%;
 }
 .red {
   color: red;
