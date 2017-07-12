@@ -53,6 +53,7 @@
           <span class="counter" maxlength="140">140</span>
         </form>
       </section>
+      <section class="tweetList"></section>
     </main>
   </body>
 
@@ -73,17 +74,17 @@ $('#addTweet').on('submit', function (event) {
     message = "<span class='warning'></span>";
     $("form .warning").replaceWith(message);
     console.log(data);
+    $.ajax({
+        method: 'POST',
+        url: '/tweets',
+        data: $(this).serialize()
+      }).done(function () {
+        loadTweets();
+    });
   }
 });
 
 
-  // $.ajax({
-  //   method: 'POST',
-  //   url: '/tweets',
-  //   data: $(this).serialize()
-  // }).done(function () {
-  //   addTweet(data);
-  // });
 
 </script>
 </html>

@@ -5,9 +5,10 @@
  */
 
 function renderTweets(tweets) {
+  $('section.tweetList').empty();
   for (var users in tweets){
     var $tweet = createTweetElement(tweets[users]);
-    $('main').append($tweet);
+    $('section.tweetList').prepend($tweet);
   }
 }
 
@@ -37,7 +38,6 @@ function loadTweets() {
       type: 'GET'
   }).then(function (jsonContent) {
       renderTweets(jsonContent);
-      console.log(jsonContent);
   });
 }
 
