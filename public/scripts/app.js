@@ -32,6 +32,7 @@ function createTweetElement(data){
   return $tweet;
 }
 
+
 function loadTweets() {
   $.ajax({
       url: '/tweets',
@@ -60,7 +61,7 @@ $( document ).ready(function() {
     $(this).removeClass('on');
   });
 
-  //ADD TWEETS
+  //Add new Tweets
   $('#addTweet').on('submit', function (event) {
   event.preventDefault();
   var message = '';
@@ -81,7 +82,8 @@ $( document ).ready(function() {
       }).done(function () {
         loadTweets();
     });
-  $('#addTweet').trigger("reset");
+  $(this).trigger("reset");
+  $(this).find('.counter').replaceWith('<span class="counter" maxlength="140">140</span>');
   }
 });
 
