@@ -53,8 +53,15 @@ $( document ).ready(function() {
 
   //Compose button events and handlers
   $('nav').on('click', '.button', function(){
-    $(this).parent().parent().find('.new-tweet').slideToggle();
-    $(this).parent().parent().find('#tweetText').focus();
+    let nav = $(this).parent().parent().find('.new-tweet')
+    if (nav.is(":visible")){
+      $(this).parent().parent().find('#tweetText').blur();
+      nav.slideToggle();
+    } else {
+      nav.slideToggle();
+      $(this).parent().parent().find('#tweetText').focus();
+    }
+    //$(this).parent().parent().find('#tweetText').focus();
     $(this).addClass('on');
   });
   $('nav').on('mouseleave', '.button', function(){
