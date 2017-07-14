@@ -78,6 +78,7 @@ $( document ).ready(function() {
 
   //Compose button events and handlers
   $('main').on('click', '.like', function(){
+    const _this = this;
     let id = $(this).parent().parent().parent().attr('id');
     if ($(this).hasClass("active")){
       $(this).removeClass('active');
@@ -90,15 +91,15 @@ $( document ).ready(function() {
       url: `/tweets/likes/${id}/`,
       type: "GET",
     }).done(function(data) {
-      console.log(1);
       let newLikes = count(data, check);
       displayLikes(newLikes);
       updateLikes(newLikes, id);
     });
 
+
     function displayLikes(likes){
       let likesSpan = `<span class="likesCount">${likes}</span>`
-      $(this).parent().find('.likesCount').replaceWith(likesSpan);
+      $(_this).parent().find('.likesCount').replaceWith(likesSpan);
       console.log(likes);
     }
 
