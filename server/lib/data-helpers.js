@@ -1,5 +1,7 @@
 "use strict";
 
+let ObjectId = require("mongodb").ObjectId;
+
 // Simulates the kind of delay we see with network or filesystem operations
 const simulateDelay = require("./util/simulate-delay");
 
@@ -15,20 +17,32 @@ module.exports = function makeDataHelpers(db) {
       });
     },
 
-        // Get all tweets in MongoDB
-    // likeTweets: function(likeCount, callback) {
-    //   db.collection("tweets").find().toArray(callback);
-    //   db.inventory.updateOne(
-    //      { _id: `ObjectId("${________}")` },
-    //      {$set: { "likes": count },
-    //        $currentDate: { lastModified: true }
-    //      }
-    //   )
-    // },
-
     // Get all tweets in MongoDB
     getTweets: function(callback) {
-      db.collection("tweets").find().toArray(callback);
+      return db.collection("tweets").find().toArray(callback);
+    },
+
+    saveLike: function(like, id, callback) {
+      simulateDelay(() => {
+        console.log(id)
+        db.collection("tweets").updateOne(
+                                       { _id: ObjectId(id) },
+                                       {
+                                         $set: { "created_at": like },
+                                         $currentDate: { lastModified: true }
+                                       }
+                                    );
+        callback(null, true);
+      });
+    },
+
+    getLikes: function(id, callback) {
+      let _id = new ObjectId(id);
+      db.collection("tweets").findOne(
+        {"_id": _id},
+        {"created_at": 1},
+        callback
+      );
     }
 
   };

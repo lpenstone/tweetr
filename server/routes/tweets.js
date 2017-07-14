@@ -17,6 +17,25 @@ module.exports = function(DataHelpers) {
     });
   });
 
+  tweetsRoutes.get("/likes/:id", function(req, res) {
+    let id = req.params.id;
+    DataHelpers.getLikes(id, (err, tweet) => {
+    res.json(tweet.created_at);
+    });
+  });
+
+  tweetsRoutes.post("/likes/", function(req, res) {
+    let likes = parseInt(req.body.likes);
+    let id = req.body.id;
+    DataHelpers.saveLike(likes, id, (err) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.status(201).send();
+      }
+    });
+  });
+
   tweetsRoutes.post("/", function(req, res) {
     if (!req.body.text) {
       res.status(400).json({ error: 'invalid request: no data in POST body'});
@@ -46,12 +65,6 @@ module.exports = function(DataHelpers) {
 }
 
 function addTweet(data) {
-  $.get('/tweets').then(function () {
-    DataHelpers(data);
-  });
-};
-
-function likeTweet(data) {
   $.get('/tweets').then(function () {
     DataHelpers(data);
   });

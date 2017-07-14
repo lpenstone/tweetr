@@ -18,6 +18,11 @@ function createTweetElement(data){
   var handle = data['user']['handle'];
   var content = data['content']['text'];
   var timeCreated = data['created_at'];
+  var id = data['_id'];
+  var likes = data['likes'];
+    if (!likes){
+      likes = 0;
+    }
 
   var image = $("<img>").addClass("image").attr('src', icon);
   var user = $("<span>").addClass("user").text(handle);
@@ -25,9 +30,9 @@ function createTweetElement(data){
   var header = $("<header>").append(image, user, userName);
   var message = $("<p>").addClass("tweetText").text(content);
   var date = $("<span>").addClass("time").text(timeCreated);
-  var links = $("<span>").addClass("link").html('<span class="likesCount">0</span> <span class="like"><i class="fa fa-heart"></i></span> <i class="fa fa-retweet"></i> <i class="fa fa-flag"></i>');
+  var links = $("<span>").addClass("link").html(`<span class="likesCount">${timeCreated}</span> <span class="like"><i class="fa fa-heart"></i></span> <i class="fa fa-retweet"></i> <i class="fa fa-flag"></i>`);
   var footer = $("<footer>").append(date, links);
-  var $tweet = $("<article>").addClass("tweet").append(header, message, footer);
+  var $tweet = $("<article>").addClass("tweet").attr('id', id ).append(header, message, footer);
 
   return $tweet;
 }
@@ -52,6 +57,8 @@ $( document ).ready(function() {
   loadTweets();
   //loadLikes(); <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+
+
   //Compose button events and handlers
   $('nav').on('click', '.button', function(){
     let nav = $(this).parent().parent().find('.new-tweet')
@@ -62,34 +69,57 @@ $( document ).ready(function() {
       nav.slideToggle();
       $(this).parent().parent().find('#tweetText').focus();
     }
-    //$(this).parent().parent().find('#tweetText').focus();
     $(this).addClass('on');
   });
   $('nav').on('mouseleave', '.button', function(){
     $(this).removeClass('on');
   });
 
-  var likes = 0;
-  //var likes = LIKES FROM DATABASE;
 
   //Compose button events and handlers
   $('main').on('click', '.like', function(){
+    let id = $(this).parent().parent().parent().attr('id');
     if ($(this).hasClass("active")){
       $(this).removeClass('active');
-      var num = count(false, likes);
-      var likesTotal = `<span class="likesCount">${num}</span>`;
-      $(this).parent().find('.likesCount').replaceWith(likesTotal);
+      var check = false;
     } else {
       $(this).addClass('active');
-      let check = true;
-      //var num = count(true, likes);
-      //var likesTotal = `<span class="likesCount">${num}</span>`;
-      $(this).parent().find('.likesCount').replaceWith(likesTotal);
+      var check = true;
     }
+  $.ajax({
+      url: `/tweets/likes/${id}/`,
+      type: "GET",
+    }).done(function(data) {
+      console.log(1);
+      let newLikes = count(data, check);
+      displayLikes(newLikes);
+      updateLikes(newLikes, id);
+    });
+
+    function displayLikes(likes){
+      let likesSpan = `<span class="likesCount">${likes}</span>`
+      $(this).parent().find('.likesCount').replaceWith(likesSpan);
+      console.log(likes);
+    }
+
+
+    function updateLikes(likes, id){
+      $.ajax({
+      type: 'POST',
+      url: "/tweets/likes",
+      data: {'likes': likes, 'id': id},
+      dataType: "text"
+      }).done(function(){
+        console.log('complete update');
+      });
+    }
+
   });
 
-
-  function count(check, likes){
+  function count(likes, check){ //Need to add or minus a like count in database
+    if (!likes){
+      likes = 0;
+    }
     if (check){
       likes++;
     } else {
@@ -98,22 +128,7 @@ $( document ).ready(function() {
     return likes;
   }
 
-function loadLikes() {
-  $.ajax({
-      url: '/tweets',
-      type: 'GET'
-  }).then(function (jsonContent) {
-      displayLikes(jsonContent);
-  });
-}
 
-function displayLikes(data, check) {
-  let id = ID OF USER //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-  let likes = data[id]['likes'];
-  likesTotal = `<span class="likesCount">${likes}</span>`;
-  return likesTotal;
-  }
-}
 
   //Add new Tweets
   $('#addTweet').on('submit', function (event) {
@@ -185,3 +200,36 @@ function displayLikes(data, check) {
     //       time = Math.round(timeSince/31536000) + ' years ago';
     //     }
     //   }
+
+
+
+
+
+//LIKES
+
+  //     //Compose button events and handlers
+  // $('main').on('click', '.like', function(){
+  //   if ($(this).hasClass("active")){
+  //     $(this).removeClass('active');
+  //     var num = count(false, likes);
+  //     var likesTotal = `<span class="likesCount">${num}</span>`;
+  //     $(this).parent().find('.likesCount').replaceWith(likesTotal);
+  //   } else {
+  //     $(this).addClass('active');
+  //     let check = true;
+  //     var num = count(true, likes);
+  //     var likesTotal = `<span class="likesCount">${num}</span>`;
+  //     var test = $(this).parent().parent().parent().attr('id'); //Getting the ID of the Tweet
+  //     console.log(test);
+  //     //var likesTotal = loadLikes();
+  //     $(this).parent().find('.likesCount').replaceWith(likesTotal);
+  //   }
+  // });
+
+
+  // function displayLikes(data, check) { //Display likes from database
+//   let id = 0//FIND ID FROM JSON //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+//   let likes = data[id]['likes'];
+//   likesTotal = `<span class="likesCount">${likes}</span>`;
+//   return likesTotal;
+//   }
