@@ -25,7 +25,7 @@ function createTweetElement(data){
   var header = $("<header>").append(image, user, userName);
   var message = $("<p>").addClass("tweetText").text(content);
   var date = $("<span>").addClass("time").text(timeCreated);
-  var links = $("<span>").addClass("link").html('<span class="like"><i class="fa fa-heart"></i></span> <i class="fa fa-retweet"></i> <i class="fa fa-flag"></i>');
+  var links = $("<span>").addClass("link").html('<span class="likesCount">0</span> <span class="like"><i class="fa fa-heart"></i></span> <i class="fa fa-retweet"></i> <i class="fa fa-flag"></i>');
   var footer = $("<footer>").append(date, links);
   var $tweet = $("<article>").addClass("tweet").append(header, message, footer);
 
@@ -50,6 +50,7 @@ $( document ).ready(function() {
 
   //Display the tweets initially
   loadTweets();
+  //loadLikes(); <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
   //Compose button events and handlers
   $('nav').on('click', '.button', function(){
@@ -68,15 +69,51 @@ $( document ).ready(function() {
     $(this).removeClass('on');
   });
 
+  var likes = 0;
+  //var likes = LIKES FROM DATABASE;
 
   //Compose button events and handlers
   $('main').on('click', '.like', function(){
     if ($(this).hasClass("active")){
       $(this).removeClass('active');
+      var num = count(false, likes);
+      var likesTotal = `<span class="likesCount">${num}</span>`;
+      $(this).parent().find('.likesCount').replaceWith(likesTotal);
     } else {
       $(this).addClass('active');
+      let check = true;
+      //var num = count(true, likes);
+      //var likesTotal = `<span class="likesCount">${num}</span>`;
+      $(this).parent().find('.likesCount').replaceWith(likesTotal);
     }
   });
+
+
+  function count(check, likes){
+    if (check){
+      likes++;
+    } else {
+      likes--;
+    }
+    return likes;
+  }
+
+function loadLikes() {
+  $.ajax({
+      url: '/tweets',
+      type: 'GET'
+  }).then(function (jsonContent) {
+      displayLikes(jsonContent);
+  });
+}
+
+function displayLikes(data, check) {
+  let id = ID OF USER //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  let likes = data[id]['likes'];
+  likesTotal = `<span class="likesCount">${likes}</span>`;
+  return likesTotal;
+  }
+}
 
   //Add new Tweets
   $('#addTweet').on('submit', function (event) {
