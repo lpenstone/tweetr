@@ -58,3 +58,6 @@ article footer span.link{
 article:hover footer span.link{
   opacity: 1.0;
 }
+article footer span.like.active{
+  color : red;
+}

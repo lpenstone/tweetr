@@ -15,6 +15,17 @@ module.exports = function makeDataHelpers(db) {
       });
     },
 
+        // Get all tweets in MongoDB
+    // likeTweets: function(likeCount, callback) {
+    //   db.collection("tweets").find().toArray(callback);
+    //   db.inventory.updateOne(
+    //      { _id: `ObjectId("${________}")` },
+    //      {$set: { "likes": count },
+    //        $currentDate: { lastModified: true }
+    //      }
+    //   )
+    // },
+
     // Get all tweets in MongoDB
     getTweets: function(callback) {
       db.collection("tweets").find().toArray(callback);

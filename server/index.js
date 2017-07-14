@@ -23,6 +23,13 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
   app.use("/tweets", tweetsRoutes);
 });
 
+
+app.listen(PORT, () => {
+  console.log("Example app listening on port " + PORT);
+});
+
+
+
 // The `data-helpers` module provides an interface to the database of tweets.
 // This simple interface layer has a big benefit: we could switch out the
 // actual database it uses and see little to no changes elsewhere in the code
@@ -35,7 +42,3 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 // so it can define routes that use it to interact with the data layer.
 
 // Mount the tweets routes at the "/tweets" path prefix:
-
-app.listen(PORT, () => {
-  console.log("Example app listening on port " + PORT);
-});

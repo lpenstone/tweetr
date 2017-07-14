@@ -50,3 +50,9 @@ function addTweet(data) {
     DataHelpers(data);
   });
 };
+
+function likeTweet(data) {
+  $.get('/tweets').then(function () {
+    DataHelpers(data);
+  });
+};

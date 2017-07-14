@@ -25,7 +25,7 @@ function createTweetElement(data){
   var header = $("<header>").append(image, user, userName);
   var message = $("<p>").addClass("tweetText").text(content);
   var date = $("<span>").addClass("time").text(timeCreated);
-  var links = $("<span>").addClass("link").html('<i class="fa fa-heart"></i> <i class="fa fa-retweet"></i> <i class="fa fa-flag"></i>');
+  var links = $("<span>").addClass("link").html('<span class="like"><i class="fa fa-heart"></i></span> <i class="fa fa-retweet"></i> <i class="fa fa-flag"></i>');
   var footer = $("<footer>").append(date, links);
   var $tweet = $("<article>").addClass("tweet").append(header, message, footer);
 
@@ -66,6 +66,16 @@ $( document ).ready(function() {
   });
   $('nav').on('mouseleave', '.button', function(){
     $(this).removeClass('on');
+  });
+
+
+  //Compose button events and handlers
+  $('main').on('click', '.like', function(){
+    if ($(this).hasClass("active")){
+      $(this).removeClass('active');
+    } else {
+      $(this).addClass('active');
+    }
   });
 
   //Add new Tweets
