@@ -9,33 +9,32 @@ const simulateDelay = require("./util/simulate-delay");
 module.exports = function makeDataHelpers(db) {
   return {
 
-    // Saves a tweet to MongoDB
+    // Saves a tweet to database
     saveTweet: function(newTweet, callback) {
-      simulateDelay(() => {
-        db.collection("tweets").insertOne(newTweet);
-        callback(null, true);
-      });
+      db.collection("tweets").insertOne(newTweet);
+      callback(null, true);
     },
 
-    // Get all tweets in MongoDB
+    // Get all tweets from database
     getTweets: function(callback) {
       return db.collection("tweets").find().toArray(callback);
     },
 
+    //Save the number of likes to databse
     saveLike: function(like, id, callback) {
-      simulateDelay(() => {
-        console.log(id)
-        db.collection("tweets").updateOne(
-                                       { _id: ObjectId(id) },
-                                       {
-                                         $set: { "created_at": like },
-                                         $currentDate: { lastModified: true }
-                                       }
+      console.log(id)
+      db.collection("tweets").update(
+                                     { _id: ObjectId(id) },
+                                     {
+                                       $set: { "created_at": like },
+                                       $currentDate: { lastModified: true }
+                                     },
+                                     { upsert: true}
                                     );
-        callback(null, true);
-      });
+      callback(null, true);
     },
 
+    //Retrieve the number of likes from database
     getLikes: function(id, callback) {
       let _id = new ObjectId(id);
       db.collection("tweets").findOne(
@@ -44,7 +43,6 @@ module.exports = function makeDataHelpers(db) {
         callback
       );
     }
-
   };
 }
 

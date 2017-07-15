@@ -4,14 +4,7 @@
  * Reminder: Use (and do all your DOM work in) jQuery's document ready function
  */
 
-function renderTweets(tweets) {
-  $('section.tweetList').empty();
-  for (var users in tweets){
-    var $tweet = createTweetElement(tweets[users]);
-    $('section.tweetList').prepend($tweet);
-  }
-}
-
+//Create Tweet HTML for homepage with data from database
 function createTweetElement(data){
   var name = data['user']['name'];
   var icon = data['user']['avatars']['large'];
@@ -37,7 +30,17 @@ function createTweetElement(data){
   return $tweet;
 }
 
+//Add the tweets to the homepage
+function renderTweets(tweets) {
+  $('section.tweetList').empty();
+  for (var users in tweets){
+    var $tweet = createTweetElement(tweets[users]);
+    $('section.tweetList').prepend($tweet);
+  }
+}
 
+
+//Retrieve Tweet data from databse to add to homepage
 function loadTweets() {
   $.ajax({
       url: '/tweets',
@@ -48,18 +51,14 @@ function loadTweets() {
 }
 
 
-
-
 //When the page has loaded
 $( document ).ready(function() {
 
   //Display the tweets initially
   loadTweets();
-  //loadLikes(); <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
-
-  //Compose button events and handlers
+  //"Compose" button to toggle tweet submission form
   $('nav').on('click', '.button', function(){
     let nav = $(this).parent().parent().find('.new-tweet')
     if (nav.is(":visible")){
@@ -75,8 +74,7 @@ $( document ).ready(function() {
     $(this).removeClass('on');
   });
 
-
-  //Compose button events and handlers
+  //"Like" button
   $('main').on('click', '.like', function(){
     const _this = this;
     let id = $(this).parent().parent().parent().attr('id');
@@ -87,23 +85,38 @@ $( document ).ready(function() {
       $(this).addClass('active');
       var check = true;
     }
-  $.ajax({
+
+    //Retrieving number of likes from database
+    $.ajax({
       url: `/tweets/likes/${id}/`,
       type: "GET",
-    }).done(function(data) {
+    }).done(function(data) { //Apply functions using the number of likes
       let newLikes = count(data, check);
       displayLikes(newLikes);
       updateLikes(newLikes, id);
     });
 
+    //Add or remove likes to the total
+    function count(likes, check){
+      if (!likes){
+        likes = 0;
+      }
+      if (check){
+        likes++;
+      } else {
+        likes--;
+      }
+      return likes;
+    }
 
+    //Display the number of likes
     function displayLikes(likes){
       let likesSpan = `<span class="likesCount">${likes}</span>`
       $(_this).parent().find('.likesCount').replaceWith(likesSpan);
       console.log(likes);
     }
 
-
+    //Update the number of likes in the database (POST)
     function updateLikes(likes, id){
       $.ajax({
       type: 'POST',
@@ -114,49 +127,34 @@ $( document ).ready(function() {
         console.log('complete update');
       });
     }
-
   });
-
-  function count(likes, check){ //Need to add or minus a like count in database
-    if (!likes){
-      likes = 0;
-    }
-    if (check){
-      likes++;
-    } else {
-      likes--;
-    }
-    return likes;
-  }
-
 
 
   //Add new Tweets
   $('#addTweet').on('submit', function (event) {
-  event.preventDefault();
-  var message = '';
-  var data = $('#tweetText').val();
-  if ( data === "" || data === null){
-    message = '<span class="warning">Need to enter a tweet</span>';
-    $("form .warning").replaceWith(message);
-  } else if ( data.length > 140){
-    message = '<span class="warning">Too many characters</span>';
-    $("form .warning").replaceWith(message);
-  } else {
-    message = "<span class='warning'></span>";
-    $("form .warning").replaceWith(message);
-    $.ajax({
-        method: 'POST',
-        url: '/tweets',
-        data: $(this).serialize()
-      }).done(function () {
-        loadTweets();
-    });
-  $(this).trigger("reset");
-  $(this).find('.counter').replaceWith('<span class="counter" maxlength="140">140</span>');
-  }
-});
-
+    event.preventDefault();
+    var message = '';
+    var data = $('#tweetText').val();
+    if ( data === "" || data === null){
+      message = '<span class="warning">Need to enter a tweet</span>';
+      $("form .warning").replaceWith(message);
+    } else if ( data.length > 140){
+      message = '<span class="warning">Too many characters</span>';
+      $("form .warning").replaceWith(message);
+    } else {
+      message = "<span class='warning'></span>";
+      $("form .warning").replaceWith(message);
+      $.ajax({
+          method: 'POST',
+          url: '/tweets',
+          data: $(this).serialize()
+        }).done(function () {
+          loadTweets();
+      });
+      $(this).trigger("reset");
+      $(this).find('.counter').replaceWith('<span class="counter" maxlength="140">140</span>');
+    }
+  });
 });
 
 
