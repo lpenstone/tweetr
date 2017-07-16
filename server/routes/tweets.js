@@ -17,13 +17,13 @@ module.exports = function(DataHelpers) {
     });
   });
 
-
   //POST endpoint to save tweet and generate user data
   tweetsRoutes.post("/", function(req, res) {
     if (!req.body.text) {
       res.status(400).json({ error: 'invalid request: no data in POST body'});
       return;
     }
+
     //User data randomly generated
     const user = req.body.user ? req.body.user : userHelper.generateRandomUser();
     const tweet = {
@@ -34,6 +34,7 @@ module.exports = function(DataHelpers) {
       created_at: Date.now(),
       likes: 0
     };
+
     //Saves tweet to database
     DataHelpers.saveTweet(tweet, (err) => {
       if (err) {
