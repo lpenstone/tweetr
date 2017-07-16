@@ -5,7 +5,7 @@ Full stack web application built with Node, Express, and MongoDB.
 
 ### Problem Statement
 
-An application that will allow users to share their thoughts with messages of 140 characters of less, and read and respond to other user's thoughts. These short messages are called "tweets".
+An application that will allow users to share their thoughts with messages of 140 characters or less, and read and respond to other user's thoughts. These short messages are called "tweets".
 
 ### Expected Usage
 
