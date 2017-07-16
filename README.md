@@ -1,7 +1,7 @@
 # Tweeter
 
 ## About the Project
-Full stack web application built with Node, Express, and MongoDB.
+Full stack web application built with Node, Express, AJAX, jQuery, HTML5, CSS3 and MongoDB.
 
 ### Problem Statement
 
