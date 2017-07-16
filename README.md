@@ -1,17 +1,29 @@
-# Tweeter Project
+# Tweeter
 
-Tweeter is a simple, single-page Twitter clone.
+## About the Project
+Full stack web application built with Node, Express, and MongoDB.
 
-This repository is the starter code for the project: Students will fork and clone this repository, then build upon it to practice their HTML, CSS, JS, jQuery and AJAX front-end skills, and their Node, Express and MongoDB back-end skills.
+### Problem Statement
+
+An application that will allow users to share their thoughts with messages of 140 characters of less, and read and respond to other user's thoughts. These short messages are called "tweets".
+
+### Expected Usage
+
+This program should be used in the browser to send messages (with 140 characters or less) to a single timeline. See who else has shared their thoughts, and express interest by "liking" the posts.
 
 ## Getting Started
+Install all dependencies (using the 'npm install' command). Run the development web server using the 'npm run local' command. Visit the page: http://localhost:8080/ in your browser.
 
-1. Fork this repository, then clone your fork of this repository.
-2. Install dependencies using the `npm install` command.
-3. Start the web server using the `npm run local` command. The app will be served at <http://localhost:8080/>.
-4. Go to <http://localhost:8080/> in your browser.
-
-## Dependencies
-
+### Dependencies
 - Express
 - Node 5.10.x or above
+
+## Final Product
+Homepage, Tweet form hidden:
+!["Homepage, Tweet form hidden."](https://github.com/lpenstone/tweetr/blob/master/public/images/photo_toggleHidden.png?raw=true)
+Tweet form exposed:
+!["Tweet form exposed"](https://github.com/lpenstone/tweetr/blob/master/public/images/photo_toggle.png?raw=true)
+Restrictions on Tweet length:
+!["Restrictions on Tweet length"](https://github.com/lpenstone/tweetr/blob/master/public/images/photo_longTweet.png?raw=true)
+Like feature:
+!["Like feature"](https://github.com/lpenstone/tweetr/blob/master/public/images/photo_likeFeature.png?raw=true)
