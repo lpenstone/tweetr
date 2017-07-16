@@ -17,6 +17,9 @@ Install all dependencies (using the 'npm install' command). Run the development 
 ### Dependencies
 - Express
 - Node 5.10.x or above
+- Chance 1.0.2 or above
+- md5 2.1.0 or above
+- Mongodb 2.2.30 or above
 
 ## Final Product
 Homepage, Tweet form hidden:
