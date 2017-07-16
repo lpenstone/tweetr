@@ -1,36 +1,48 @@
-/*
- * Client-side JS logic goes here
- * jQuery is already loaded
- * Reminder: Use (and do all your DOM work in) jQuery's document ready function
- */
-
 //Create Tweet HTML for homepage with data from database
 function createTweetElement(data){
-  var name = data['user']['name'];
-  var icon = data['user']['avatars']['large'];
-  var handle = data['user']['handle'];
-  var content = data['content']['text'];
-  var timeCreated = data['created_at'];
-  var id = data['_id'];
-  var likes = data['likes'];
-    if (!likes){
-      likes = 0;
-    }
+  let name = data['user']['name'];
+  let icon = data['user']['avatars']['large'];
+  let handle = data['user']['handle'];
+  let content = data['content']['text'];
+  let timeCreated = data['created_at'];
+  let time = getTime(timeCreated);
+  let id = data['_id'];
+  let likes = data['likes'];
 
-  var image = $("<img>").addClass("image").attr('src', icon);
-  var user = $("<span>").addClass("user").text(handle);
-  var userName = $("<h2>").text(name);
-  var header = $("<header>").append(image, user, userName);
-  var message = $("<p>").addClass("tweetText").text(content);
-  var date = $("<span>").addClass("time").text(timeCreated);
-  var links = $("<span>").addClass("link").html(`<span class="likesCount">${timeCreated}</span> <span class="like"><i class="fa fa-heart"></i></span> <i class="fa fa-retweet"></i> <i class="fa fa-flag"></i>`);
-  var footer = $("<footer>").append(date, links);
-  var $tweet = $("<article>").addClass("tweet").attr('id', id ).append(header, message, footer);
+  let image = $("<img>").addClass("image").attr('src', icon);
+  let user = $("<span>").addClass("user").text(handle);
+  let userName = $("<h2>").text(name);
+  let header = $("<header>").append(image, user, userName);
+  let message = $("<p>").addClass("tweetText").text(content);
+  let date = $("<span>").addClass("time").text(time);
+  let links = $("<span>").addClass("link").html(`<span class="likesCount">${likes}</span> <span class="like"><i class="fa fa-heart"></i></span> <i class="fa fa-retweet"></i> <i class="fa fa-flag"></i>`);
+  let footer = $("<footer>").append(date, links);
+  let $tweetHTML = $("<article>").addClass("tweet").attr('id', id ).append(header, message, footer);
 
-  return $tweet;
+  return $tweetHTML;
 }
 
-//Add the tweets to the homepage
+//Display time Tweets were sent in user-friendly manner
+function getTime(timeCreated){
+  let currentTime =  Date.now();
+  let timeSince = (currentTime - timeCreated)/1000;
+  let time = '';
+
+  if (timeSince < 60){
+    time = 'just now'
+  } else if (timeSince > 60 && timeSince < 3600){
+    time = Math.round(timeSince/60) + ' minutes ago';
+  } else if (timeSince > 3600 && timeSince < 86400){
+    time = Math.round(timeSince/3600) + ' hours ago';
+  } else if (timeSince > 86400 && timeSince < 31536000){
+    time = Math.round(timeSince/86400) + ' days ago';
+  } else {
+    time = Math.round(timeSince/31536000) + ' years ago';
+  }
+  return time;
+}
+
+//Display tweets on the homepage
 function renderTweets(tweets) {
   $('section.tweetList').empty();
   for (var users in tweets){
@@ -38,7 +50,6 @@ function renderTweets(tweets) {
     $('section.tweetList').prepend($tweet);
   }
 }
-
 
 //Retrieve Tweet data from databse to add to homepage
 function loadTweets() {
@@ -50,13 +61,11 @@ function loadTweets() {
   });
 }
 
-
 //When the page has loaded
 $( document ).ready(function() {
 
   //Display the tweets initially
   loadTweets();
-
 
   //"Compose" button to toggle tweet submission form
   $('nav').on('click', '.button', function(){
@@ -78,24 +87,29 @@ $( document ).ready(function() {
   $('main').on('click', '.like', function(){
     const _this = this;
     let id = $(this).parent().parent().parent().attr('id');
+    //Toggle heart colour
     if ($(this).hasClass("active")){
       $(this).removeClass('active');
-      var check = false;
+      var check = false; //Check if button has already been pressed
     } else {
       $(this).addClass('active');
-      var check = true;
+      var check = true; //Check if button has already been pressed
     }
-
     //Retrieving number of likes from database
     $.ajax({
       url: `/tweets/likes/${id}/`,
       type: "GET",
     }).done(function(data) { //Apply functions using the number of likes
-      let newLikes = count(data, check);
-      displayLikes(newLikes);
-      updateLikes(newLikes, id);
+      let newLikes = count(data, check); //Add or remove like
+      displayLikes(newLikes); //display the number of likes
+      updateLikes(newLikes, id); //update number of likes in databse
     });
-
+    //Display the number of likes
+    function displayLikes(likes){
+      let likesSpan = `<span class="likesCount">${likes}</span>`
+      $(_this).parent().find('.likesCount').replaceWith(likesSpan);
+      console.log(likes);
+    }
     //Add or remove likes to the total
     function count(likes, check){
       if (!likes){
@@ -108,14 +122,6 @@ $( document ).ready(function() {
       }
       return likes;
     }
-
-    //Display the number of likes
-    function displayLikes(likes){
-      let likesSpan = `<span class="likesCount">${likes}</span>`
-      $(_this).parent().find('.likesCount').replaceWith(likesSpan);
-      console.log(likes);
-    }
-
     //Update the number of likes in the database (POST)
     function updateLikes(likes, id){
       $.ajax({
@@ -128,6 +134,7 @@ $( document ).ready(function() {
       });
     }
   });
+
 
 
   //Add new Tweets
@@ -157,78 +164,3 @@ $( document ).ready(function() {
   });
 });
 
-
-
-
-
-//<<------------------------------- Ignore ----------------------------->>
-//UNSAFE METHOD
-    // var result = `<article class="tweet">
-    //                   <header>
-    //                     <img class="image" src=${icon}>
-    //                     <span class="user">${handle}</span>
-    //                     <h2>${name}</h2>
-    //                   </header>
-    //                   <p class="tweetText">${escape(content)}</p>
-    //                   <footer>
-    //                     <span class="time">${time}</span>
-    //                     <span class="link">
-    //                       <i class="fa fa-heart"></i>
-    //                       <i class="fa fa-retweet"></i>
-    //                       <i class="fa fa-flag"></i>
-    //                     </span>
-    //                   </footer>
-    //                 </article>`
-    // return result;
-
-
-    //     var currentTime = Math.round((new Date()).getTime()/1000);
-    // var timeSince = (timeCreated - currentTime) / 1000;
-    // var time = '';
-
-    // for (i = 0; i < 1000; i++){
-    //     if (timeSince < 60){
-    //       time = 'just now'
-    //     } else if (timeSince > 60 && timeSince < 3600){
-    //       time = Math.round(timeSince/60) + ' minutes ago';
-    //     } else if (timeSince > 3600 && timeSince < 86400){
-    //       time = Math.round(timeSince/3600) + ' hours ago';
-    //     } else if (timeSince > 86400 && timeSince < 31536000){
-    //       time = Math.round(timeSince/86400) + ' days ago';
-    //     } else {
-    //       time = Math.round(timeSince/31536000) + ' years ago';
-    //     }
-    //   }
-
-
-
-
-
-//LIKES
-
-  //     //Compose button events and handlers
-  // $('main').on('click', '.like', function(){
-  //   if ($(this).hasClass("active")){
-  //     $(this).removeClass('active');
-  //     var num = count(false, likes);
-  //     var likesTotal = `<span class="likesCount">${num}</span>`;
-  //     $(this).parent().find('.likesCount').replaceWith(likesTotal);
-  //   } else {
-  //     $(this).addClass('active');
-  //     let check = true;
-  //     var num = count(true, likes);
-  //     var likesTotal = `<span class="likesCount">${num}</span>`;
-  //     var test = $(this).parent().parent().parent().attr('id'); //Getting the ID of the Tweet
-  //     console.log(test);
-  //     //var likesTotal = loadLikes();
-  //     $(this).parent().find('.likesCount').replaceWith(likesTotal);
-  //   }
-  // });
-
-
-  // function displayLikes(data, check) { //Display likes from database
-//   let id = 0//FIND ID FROM JSON //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-//   let likes = data[id]['likes'];
-//   likesTotal = `<span class="likesCount">${likes}</span>`;
-//   return likesTotal;
-//   }

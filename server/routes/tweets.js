@@ -1,5 +1,5 @@
 "use strict";
-
+//Require necessary modules
 const userHelper    = require("../lib/util/user-helper")
 const express       = require('express');
 const tweetsRoutes  = express.Router();
@@ -18,7 +18,7 @@ module.exports = function(DataHelpers) {
   });
 
 
-  //POST endpoint to send tweet and generate user data
+  //POST endpoint to save tweet and generate user data
   tweetsRoutes.post("/", function(req, res) {
     if (!req.body.text) {
       res.status(400).json({ error: 'invalid request: no data in POST body'});
@@ -31,7 +31,8 @@ module.exports = function(DataHelpers) {
       content: {
         text: req.body.text
       },
-      created_at: Date.now()
+      created_at: Date.now(),
+      likes: 0
     };
     //Saves tweet to database
     DataHelpers.saveTweet(tweet, (err) => {
@@ -47,11 +48,11 @@ module.exports = function(DataHelpers) {
   tweetsRoutes.get("/likes/:id", function(req, res) {
     let id = req.params.id;
     DataHelpers.getLikes(id, (err, tweet) => {
-    res.json(tweet.created_at);
+    res.json(tweet.likes);
     });
   });
 
-  //POST endpoint to send likes data
+  //POST endpoint to save likes data
   tweetsRoutes.post("/likes/", function(req, res) {
     let likes = parseInt(req.body.likes);
     let id = req.body.id;
@@ -66,6 +67,7 @@ module.exports = function(DataHelpers) {
   return tweetsRoutes;
 }
 
+//Apply DataHelpers to the route /tweets
 function addTweet(data) {
   $.get('/tweets').then(function () {
     DataHelpers(data);
